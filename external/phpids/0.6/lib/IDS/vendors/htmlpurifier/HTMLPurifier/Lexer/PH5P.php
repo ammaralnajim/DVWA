@@ -1448,9 +1448,9 @@ class HTML5TreeConstructer
         if (($token['type'] === HTML5::CHARACTR &&
         preg_match('/^[\t\n\x0b\x0c ]+$/', $token['data'])) || (
             $token['type'] === HTML5::CHARACTR && in_array(
-            end($this->stack)->nodeName,
-            array('title', 'style', 'script')
-        )
+                end($this->stack)->nodeName,
+                array('title', 'style', 'script')
+            )
         )) {
             /* Append the character to the current node. */
             $this->insertText($token['data']);
