@@ -10,8 +10,8 @@ header($headerCSP);
 
 ?>
 <?php
-if (isset ($_POST['include'])) {
-$page[ 'body' ] .= "
+if (isset($_POST['include'])) {
+    $page[ 'body' ] .= "
 	<script src='" . $_POST['include'] . "'></script>
 ";
 }

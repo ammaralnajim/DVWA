@@ -1,9 +1,9 @@
 <?php
 
-define( 'DVWA_WEB_PAGE_TO_ROOT', '' );
+define('DVWA_WEB_PAGE_TO_ROOT', '');
 require_once DVWA_WEB_PAGE_TO_ROOT . 'dvwa/includes/dvwaPage.inc.php';
 
-dvwaPageStartup( array( 'phpids' ) );
+dvwaPageStartup(array( 'phpids' ));
 
 $page = dvwaPageNewGrab();
 $page[ 'title' ]   = 'About' . $page[ 'title_separator' ].$page[ 'title' ];
@@ -18,28 +18,28 @@ $page[ 'body' ] .= "
 
 	<h2>Links</h2>
 	<ul>
-		<li>Project Home: " . dvwaExternalLinkUrlGet( 'https://github.com/digininja/DVWA' ) . "</li>
-		<li>Bug Tracker: " . dvwaExternalLinkUrlGet( 'https://github.com/digininja/DVWA/issues' ) . "</li>
-		<li>Wiki: " . dvwaExternalLinkUrlGet( 'https://github.com/digininja/DVWA/wiki' ) . "</li>
+		<li>Project Home: " . dvwaExternalLinkUrlGet('https://github.com/digininja/DVWA') . "</li>
+		<li>Bug Tracker: " . dvwaExternalLinkUrlGet('https://github.com/digininja/DVWA/issues') . "</li>
+		<li>Wiki: " . dvwaExternalLinkUrlGet('https://github.com/digininja/DVWA/wiki') . "</li>
 	</ul>
 
 	<h2>Credits</h2>
 	<ul>
-		<li>Brooks Garrett: " . dvwaExternalLinkUrlGet( 'http://brooksgarrett.com/','www.brooksgarrett.com' ) . "</li>
+		<li>Brooks Garrett: " . dvwaExternalLinkUrlGet('http://brooksgarrett.com/', 'www.brooksgarrett.com') . "</li>
 		<li>Craig</li>
-		<li>g0tmi1k: " . dvwaExternalLinkUrlGet( 'https://blog.g0tmi1k.com/','g0tmi1k.com' ) . "</li>
-		<li>Jamesr: " . dvwaExternalLinkUrlGet( 'https://www.creativenucleus.com/','www.creativenucleus.com' ) . "</li>
+		<li>g0tmi1k: " . dvwaExternalLinkUrlGet('https://blog.g0tmi1k.com/', 'g0tmi1k.com') . "</li>
+		<li>Jamesr: " . dvwaExternalLinkUrlGet('https://www.creativenucleus.com/', 'www.creativenucleus.com') . "</li>
 		<li>Jason Jones</li>
 		<li>RandomStorm</li>
-		<li>Ryan Dewhurst: " . dvwaExternalLinkUrlGet( 'https://wpscan.com/','wpscan.com' ) . "</li>
-		<li>Shinkurt: " . dvwaExternalLinkUrlGet( 'http://www.paulosyibelo.com/','www.paulosyibelo.com' ) . "</li>
-		<li>Tedi Heriyanto: " . dvwaExternalLinkUrlGet( 'http://tedi.heriyanto.net/','tedi.heriyanto.net' ) . "</li>
+		<li>Ryan Dewhurst: " . dvwaExternalLinkUrlGet('https://wpscan.com/', 'wpscan.com') . "</li>
+		<li>Shinkurt: " . dvwaExternalLinkUrlGet('http://www.paulosyibelo.com/', 'www.paulosyibelo.com') . "</li>
+		<li>Tedi Heriyanto: " . dvwaExternalLinkUrlGet('http://tedi.heriyanto.net/', 'tedi.heriyanto.net') . "</li>
 		<li>Tom Mackenzie</li>
-		<li>Robin Wood: " . dvwaExternalLinkUrlGet( 'https://digi.ninja/','digi.ninja' ) . "</li>
-		<li>Zhengyang Song: " . dvwaExternalLinkUrlGet( 'https://github.com/songzy12/','songzy12' ) . "</li>
+		<li>Robin Wood: " . dvwaExternalLinkUrlGet('https://digi.ninja/', 'digi.ninja') . "</li>
+		<li>Zhengyang Song: " . dvwaExternalLinkUrlGet('https://github.com/songzy12/', 'songzy12') . "</li>
 	</ul>
 	<ul>
-		<li>PHPIDS - Copyright (c) 2007 " . dvwaExternalLinkUrlGet( 'http://github.com/PHPIDS/PHPIDS', 'PHPIDS group' ) . "</li>
+		<li>PHPIDS - Copyright (c) 2007 " . dvwaExternalLinkUrlGet('http://github.com/PHPIDS/PHPIDS', 'PHPIDS group') . "</li>
 	</ul>
 
 	<h2>License</h2>
@@ -53,8 +53,6 @@ $page[ 'body' ] .= "
 	<p>Everyone is welcome to contribute and help make DVWA as successful as it can be. All contributors can have their name and link (if they wish) placed in the credits section. To contribute pick an Issue from the Project Home to work on or submit a patch to the Issues list.</p>
 </div>\n";
 
-dvwaHtmlEcho( $page );
+dvwaHtmlEcho($page);
 
 exit;
-
-?>

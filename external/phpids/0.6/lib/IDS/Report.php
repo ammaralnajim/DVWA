@@ -9,16 +9,16 @@
  *
  * PHPIDS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, version 3 of the License, or 
+ * the Free Software Foundation, version 3 of the License, or
  * (at your option) any later version.
  *
  * PHPIDS is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
- * along with PHPIDS. If not, see <http://www.gnu.org/licenses/>. 
+ * along with PHPIDS. If not, see <http://www.gnu.org/licenses/>.
  *
  * PHP version 5.1.6+
  *
@@ -52,7 +52,6 @@
  */
 class IDS_Report implements Countable, IteratorAggregate
 {
-
     /**
      * Event container
      *
@@ -158,8 +157,10 @@ class IDS_Report implements Countable, IteratorAggregate
             $this->tags = array();
 
             foreach ($this->events as $event) {
-                $this->tags = array_merge($this->tags,
-                                          $event->getTags());
+                $this->tags = array_merge(
+                    $this->tags,
+                    $event->getTags()
+                );
             }
 
             $this->tags = array_values(array_unique($this->tags));
@@ -216,15 +217,15 @@ class IDS_Report implements Countable, IteratorAggregate
         return count($this->events);
     }
 
-     /**
-     * Return iterator object
-     *
-     * In order to provide the possibility to directly iterate over the
-     * IDS_Event object the IteratorAggregate is implemented. One can easily
-     * use foreach() to iterate through all stored IDS_Event objects.
-     *
-     * @return Iterator
-     */
+    /**
+    * Return iterator object
+    *
+    * In order to provide the possibility to directly iterate over the
+    * IDS_Event object the IteratorAggregate is implemented. One can easily
+    * use foreach() to iterate through all stored IDS_Event objects.
+    *
+    * @return Iterator
+    */
     public function getIterator()
     {
         return new ArrayObject($this->events);
@@ -315,13 +316,13 @@ class IDS_Report implements Countable, IteratorAggregate
 
             if ($centrifuge = $this->getCentrifuge()) {
                 $output .= 'Centrifuge detection data';
-                $output .= '<br/>  Threshold: ' . 
+                $output .= '<br/>  Threshold: ' .
                     ((isset($centrifuge['threshold'])&&$centrifuge['threshold']) ?
                     $centrifuge['threshold'] : '---');
-                $output .= '<br/>  Ratio: ' . 
+                $output .= '<br/>  Ratio: ' .
                     ((isset($centrifuge['ratio'])&&$centrifuge['ratio']) ?
                     $centrifuge['ratio'] : '---');
-                if(isset($centrifuge['converted'])) {
+                if (isset($centrifuge['converted'])) {
                     $output .= '<br/>  Converted: ' . $centrifuge['converted'];
                 }
                 $output .= "<br/><br/>\n";
