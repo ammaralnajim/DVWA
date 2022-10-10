@@ -78,11 +78,9 @@ class HTMLPurifier_Encoder
                 // or a multi-octet sequence.
                 if (0 == (0x80 & ($in))) {
                     // US-ASCII, pass straight through.
-                    if (($in <= 31 || $in == 127) && 
-                        !($in == 9 || $in == 13 || $in == 10) // save \r\t\n
+                    if (!(($in <= 31 || $in == 127) && 
+                        !($in == 9 || $in == 13 || $in == 10)) // save \r\t\n
                     ) {
-                        // control characters, remove
-                    } else {
                         $out .= $char;
                     }
                     // reset
@@ -146,37 +144,6 @@ class HTMLPurifier_Encoder
                     $mUcs4 |= $tmp;
                     
                     if (0 == --$mState) {
-                        // End of the multi-octet sequence. mUcs4 now contains
-                        // the final Unicode codepoint to be output
-                        
-                        // Check for illegal sequences and codepoints.
-                        
-                        // From Unicode 3.1, non-shortest form is illegal
-                        if (((2 == $mBytes) && ($mUcs4 < 0x0080)) ||
-                            ((3 == $mBytes) && ($mUcs4 < 0x0800)) ||
-                            ((4 == $mBytes) && ($mUcs4 < 0x10000)) ||
-                            (4 < $mBytes) ||
-                            // From Unicode 3.2, surrogate characters = illegal
-                            (($mUcs4 & 0xFFFFF800) == 0xD800) ||
-                            // Codepoints outside the Unicode range are illegal
-                            ($mUcs4 > 0x10FFFF)
-                        ) {
-                            
-                        } elseif (0xFEFF != $mUcs4 && // omit BOM
-                            // check for valid Char unicode codepoints
-                            (
-                                0x9 == $mUcs4 ||
-                                0xA == $mUcs4 ||
-                                0xD == $mUcs4 ||
-                                (0x20 <= $mUcs4 && 0x7E >= $mUcs4) ||
-                                // 7F-9F is not strictly prohibited by XML,
-                                // but it is non-SGML, and thus we don't allow it
-                                (0xA0 <= $mUcs4 && 0xD7FF >= $mUcs4) ||
-                                (0x10000 <= $mUcs4 && 0x10FFFF >= $mUcs4)
-                            )
-                        ) {
-                            $out .= $char;
-                        }
                         // initialize UTF8 cache (reset)
                         $mState = 0;
                         $mUcs4  = 0;

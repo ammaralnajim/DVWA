@@ -172,15 +172,6 @@ class HTMLPurifier_Injector_AutoParagraph extends HTMLPurifier_Injector
                         
                         if (!is_array($token)) $token = array($token);
                         array_unshift($token, new HTMLPurifier_Token_Text("\n\n"));
-                    } else {
-                        // State 3.1.2: ...</p>\n\n{p}<b>
-                        //                            ---
-                        
-                        // State 3.2.2: ...</p>\n\n<div>
-                        //                         -----
-                        
-                        // Note: PAR<ELEM> cannot occur because PAR would have been
-                        // wrapped in <p> tags.
                     }
                 }
             }

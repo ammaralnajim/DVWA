@@ -37,14 +37,6 @@ class HTMLPurifier_ChildDef_Table extends HTMLPurifier_ChildDef
         foreach ($tokens_of_children as $token) {
             $is_child = ($nesting == 0);
             
-            if ($token === false) {
-                // terminating sequence started
-            } elseif ($token instanceof HTMLPurifier_Token_Start) {
-                $nesting++;
-            } elseif ($token instanceof HTMLPurifier_Token_End) {
-                $nesting--;
-            }
-            
             // handle node collection
             if ($is_collecting) {
                 if ($is_child) {

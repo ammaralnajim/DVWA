@@ -118,8 +118,6 @@ class HTMLPurifier_AttrValidator
                 
                 // simple substitution
                 $attr[$attr_key] = $result;
-            } else {
-                // nothing happens
             }
             
             // we'd also want slightly more complicated substitution

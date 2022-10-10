@@ -95,11 +95,10 @@ class HTMLPurifier_Language
         $sep_last = $this->getMessage('Item separator last');
         $ret = '';
         for ($i = 0, $c = count($array); $i < $c; $i++) {
-            if ($i == 0) {
+            if ($i != 0) {
+                $ret .= $sep_last;
             } elseif ($i + 1 < $c) {
                 $ret .= $sep;
-            } else {
-                $ret .= $sep_last;
             }
             $ret .= $array[$i];
         }

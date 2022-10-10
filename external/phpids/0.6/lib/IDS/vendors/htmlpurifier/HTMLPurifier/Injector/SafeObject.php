@@ -59,10 +59,7 @@ class HTMLPurifier_Injector_SafeObject extends HTMLPurifier_Injector
                 ) {
                     // keep token, and add to param stack
                     $this->paramStack[$i][$n] = true;
-                } elseif (isset($this->allowedParam[$n])) {
-                    // keep token, don't do anything to it
-                    // (could possibly check for duplicates here)
-                } else {
+                } elseif (!isset($this->allowedParam[$n])) {
                     $token = false;
                 }
             } else {

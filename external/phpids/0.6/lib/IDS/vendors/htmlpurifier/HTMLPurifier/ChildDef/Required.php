@@ -93,8 +93,6 @@ class HTMLPurifier_ChildDef_Required extends HTMLPurifier_ChildDef
                     new HTMLPurifier_Token_Text(
                         $gen->generateFromToken($token)
                     );
-            } else {
-                // drop silently
             }
         }
         if (empty($result)) return false;

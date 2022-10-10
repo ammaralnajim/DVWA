@@ -1063,8 +1063,6 @@ class HTML5 {
             $this->char--;
             $this->state = 'data';
 
-        } else {
-            // Stay in the bogus DOCTYPE state.
         }
     }
 
@@ -1300,61 +1298,33 @@ class HTML5TreeConstructer {
         }
     }
 
-    private function rootElementPhase($token) {
-        /* After the initial phase, as each token is emitted from the tokenisation
-        stage, it must be processed as described in this section. */
-
-        /* A DOCTYPE token */
-        if($token['type'] === HTML5::DOCTYPE) {
-            // Parse error. Ignore the token.
-
-        /* A comment token */
-        } elseif($token['type'] === HTML5::COMMENT) {
-            /* Append a Comment node to the Document object with the data
-            attribute set to the data given in the comment token. */
-            $comment = $this->dom->createComment($token['data']);
-            $this->dom->appendChild($comment);
-
-        /* A character token that is one of one of U+0009 CHARACTER TABULATION,
-        U+000A LINE FEED (LF), U+000B LINE TABULATION, U+000C FORM FEED (FF),
-        or U+0020 SPACE */
-        } elseif($token['type'] === HTML5::CHARACTR &&
-        preg_match('/^[\t\n\x0b\x0c ]+$/', $token['data'])) {
-            /* Append that character  to the Document node. */
-            $text = $this->dom->createTextNode($token['data']);
-            $this->dom->appendChild($text);
-
-        /* A character token that is not one of U+0009 CHARACTER TABULATION,
-            U+000A LINE FEED (LF), U+000B LINE TABULATION, U+000C FORM FEED
-            (FF), or U+0020 SPACE
-        A start tag token
-        An end tag token
-        An end-of-file token */
-        } elseif(($token['type'] === HTML5::CHARACTR &&
-        !preg_match('/^[\t\n\x0b\x0c ]+$/', $token['data'])) ||
-        $token['type'] === HTML5::STARTTAG ||
-        $token['type'] === HTML5::ENDTAG ||
-        $token['type'] === HTML5::EOF) {
-            /* Create an HTMLElement node with the tag name html, in the HTML
-            namespace. Append it to the Document object. Switch to the main
-            phase and reprocess the current token. */
-            $html = $this->dom->createElement('html');
-            $this->dom->appendChild($html);
-            $this->stack[] = $html;
-
-            $this->phase = self::MAIN_PHASE;
-            return $this->mainPhase($token);
-        }
+    private function rootElementPhase($token)
+    {
     }
 
     private function mainPhase($token) {
         /* Tokens in the main phase must be handled as follows: */
 
         /* A DOCTYPE token */
-        if($token['type'] === HTML5::DOCTYPE) {
-            // Parse error. Ignore the token.
-
-        /* A start tag token with the tag name "html" */
+        if($token['type'] !== HTML5::DOCTYPE) {
+            /* Depends on the insertion mode: */
+        switch($this->mode) {
+            case self::BEFOR_HEAD: return $this->beforeHead($token); break;
+            case self::IN_HEAD:    return $this->inHead($token); break;
+            case self::AFTER_HEAD: return $this->afterHead($token); break;
+            case self::IN_BODY:    return $this->inBody($token); break;
+            case self::IN_TABLE:   return $this->inTable($token); break;
+            case self::IN_CAPTION: return $this->inCaption($token); break;
+            case self::IN_CGROUP:  return $this->inColumnGroup($token); break;
+            case self::IN_TBODY:   return $this->inTableBody($token); break;
+            case self::IN_ROW:     return $this->inRow($token); break;
+            case self::IN_CELL:    return $this->inCell($token); break;
+            case self::IN_SELECT:  return $this->inSelect($token); break;
+            case self::AFTER_BODY: return $this->afterBody($token); break;
+            case self::IN_FRAME:   return $this->inFrameset($token); break;
+            case self::AFTR_FRAME: return $this->afterFrameset($token); break;
+            case self::END_PHASE:  return $this->trailingEndPhase($token); break;
+        }
         } elseif($token['type'] === HTML5::STARTTAG && $token['name'] === 'html') {
             /* If this start tag token was not the first start tag token, then
             it is a parse error. */
@@ -1375,25 +1345,6 @@ class HTML5TreeConstructer {
             $this->generateImpliedEndTags();
 
         /* Anything else. */
-        } else {
-            /* Depends on the insertion mode: */
-            switch($this->mode) {
-                case self::BEFOR_HEAD: return $this->beforeHead($token); break;
-                case self::IN_HEAD:    return $this->inHead($token); break;
-                case self::AFTER_HEAD: return $this->afterHead($token); break;
-                case self::IN_BODY:    return $this->inBody($token); break;
-                case self::IN_TABLE:   return $this->inTable($token); break;
-                case self::IN_CAPTION: return $this->inCaption($token); break;
-                case self::IN_CGROUP:  return $this->inColumnGroup($token); break;
-                case self::IN_TBODY:   return $this->inTableBody($token); break;
-                case self::IN_ROW:     return $this->inRow($token); break;
-                case self::IN_CELL:    return $this->inCell($token); break;
-                case self::IN_SELECT:  return $this->inSelect($token); break;
-                case self::AFTER_BODY: return $this->afterBody($token); break;
-                case self::IN_FRAME:   return $this->inFrameset($token); break;
-                case self::AFTR_FRAME: return $this->afterFrameset($token); break;
-                case self::END_PHASE:  return $this->trailingEndPhase($token); break;
-            }
         }
     }
 
@@ -1716,23 +1667,18 @@ class HTML5TreeConstructer {
                 case 'form':
                     /* If the form element pointer is not null, ignore the
                     token with a parse error. */
-                    if($this->form_pointer !== null) {
-                        // Ignore.
-
-                    /* Otherwise: */
-                    } else {
+                    if ($this->form_pointer === null) {
                         /* If the stack of open elements has a p element in
-                        scope, then act as if an end tag with the tag name p
-                        had been seen. */
+                           scope, then act as if an end tag with the tag name p
+                           had been seen. */
                         if($this->elementInScope('p')) {
                             $this->emitToken(array(
                                 'name' => 'p',
                                 'type' => HTML5::ENDTAG
                             ));
                         }
-
                         /* Insert an HTML element for the token, and set the
-                        form element pointer to point to the element created. */
+                           form element pointer to point to the element created. */
                         $element = $this->insertElement($token);
                         $this->form_pointer = $element;
                     }
@@ -2862,15 +2808,11 @@ class HTML5TreeConstructer {
 
         /* An end tag whose tag name is one of: "body", "col", "colgroup",
         "html", "tbody", "td", "tfoot", "th", "thead", "tr" */
-        } elseif($token['type'] === HTML5::ENDTAG && in_array($token['name'],
+        } elseif(!($token['type'] === HTML5::ENDTAG && in_array($token['name'],
         array('body', 'col', 'colgroup', 'html', 'tbody', 'tfoot', 'th',
-        'thead', 'tr'))) {
-            // Parse error. Ignore the token.
-
-        /* Anything else */
-        } else {
+        'thead', 'tr')))) {
             /* Process the token as if the insertion mode was "in body". */
-            $this->inBody($token);
+        $this->inBody($token);
         }
     }
 
@@ -3006,14 +2948,10 @@ class HTML5TreeConstructer {
 
         /* An end tag whose tag name is one of: "body", "caption", "col",
         "colgroup", "html", "td", "th", "tr" */
-        } elseif($token['type'] === HTML5::ENDTAG && in_array($token['name'],
-        array('body', 'caption', 'col', 'colgroup', 'html', 'td', 'th', 'tr'))) {
-            /* Parse error. Ignore the token. */
-
-        /* Anything else */
-        } else {
+        } elseif(!($token['type'] === HTML5::ENDTAG && in_array($token['name'],
+        array('body', 'caption', 'col', 'colgroup', 'html', 'td', 'th', 'tr')))) {
             /* Process the token as if the insertion mode was "in table". */
-            $this->inTable($token);
+        $this->inTable($token);
         }
     }
 
@@ -3091,14 +3029,10 @@ class HTML5TreeConstructer {
 
         /* An end tag whose tag name is one of: "body", "caption", "col",
         "colgroup", "html", "td", "th" */
-        } elseif($token['type'] === HTML5::ENDTAG && in_array($token['name'],
-        array('body', 'caption', 'col', 'colgroup', 'html', 'td', 'th', 'tr'))) {
-            /* Parse error. Ignore the token. */
-
-        /* Anything else */
-        } else {
+        } elseif(!($token['type'] === HTML5::ENDTAG && in_array($token['name'],
+        array('body', 'caption', 'col', 'colgroup', 'html', 'td', 'th', 'tr')))) {
             /* Process the token as if the insertion mode was "in table". */
-            $this->inTable($token);
+        $this->inTable($token);
         }
     }
 
@@ -3180,12 +3114,10 @@ class HTML5TreeConstructer {
 
         /* An end tag whose tag name is one of: "body", "caption", "col",
         "colgroup", "html" */
-        } elseif($token['type'] === HTML5::ENDTAG && in_array($token['name'],
-        array('body', 'caption', 'col', 'colgroup', 'html'))) {
-            /* Parse error. Ignore the token. */
-
-        /* An end tag whose tag name is one of: "table", "tbody", "tfoot",
-        "thead", "tr" */
+        } elseif(!($token['type'] === HTML5::ENDTAG && in_array($token['name'],
+        array('body', 'caption', 'col', 'colgroup', 'html')))) {
+            /* Process the token as if the insertion mode was "in body". */
+        $this->inBody($token);
         } elseif($token['type'] === HTML5::ENDTAG && in_array($token['name'],
         array('table', 'tbody', 'tfoot', 'thead', 'tr'))) {
             /* If the stack of open elements does not have an element in table
@@ -3203,9 +3135,6 @@ class HTML5TreeConstructer {
             }
 
         /* Anything else */
-        } else {
-            /* Process the token as if the insertion mode was "in body". */
-            $this->inBody($token);
         }
     }
 
@@ -3353,8 +3282,6 @@ class HTML5TreeConstructer {
             }
 
         /* Anything else */
-        } else {
-            /* Parse error. Ignore the token. */
         }
     }
 
@@ -3495,44 +3422,8 @@ class HTML5TreeConstructer {
         }
     }
 
-    private function trailingEndPhase($token) {
-        /* After the main phase, as each token is emitted from the tokenisation
-        stage, it must be processed as described in this section. */
-
-        /* A DOCTYPE token */
-        if($token['type'] === HTML5::DOCTYPE) {
-            // Parse error. Ignore the token.
-
-        /* A comment token */
-        } elseif($token['type'] === HTML5::COMMENT) {
-            /* Append a Comment node to the Document object with the data
-            attribute set to the data given in the comment token. */
-            $comment = $this->dom->createComment($token['data']);
-            $this->dom->appendChild($comment);
-
-        /* A character token that is one of one of U+0009 CHARACTER TABULATION,
-        U+000A LINE FEED (LF), U+000B LINE TABULATION, U+000C FORM FEED (FF),
-        or U+0020 SPACE */
-        } elseif($token['type'] === HTML5::CHARACTR &&
-        preg_match('/^[\t\n\x0b\x0c ]+$/', $token['data'])) {
-            /* Process the token as it would be processed in the main phase. */
-            $this->mainPhase($token);
-
-        /* A character token that is not one of U+0009 CHARACTER TABULATION,
-        U+000A LINE FEED (LF), U+000B LINE TABULATION, U+000C FORM FEED (FF),
-        or U+0020 SPACE. Or a start tag token. Or an end tag token. */
-        } elseif(($token['type'] === HTML5::CHARACTR &&
-        preg_match('/^[\t\n\x0b\x0c ]+$/', $token['data'])) ||
-        $token['type'] === HTML5::STARTTAG || $token['type'] === HTML5::ENDTAG) {
-            /* Parse error. Switch back to the main phase and reprocess the
-            token. */
-            $this->phase = self::MAIN_PHASE;
-            return $this->mainPhase($token);
-
-        /* An end-of-file token */
-        } elseif($token['type'] === HTML5::EOF) {
-            /* OMG DONE!! */
-        }
+    private function trailingEndPhase($token)
+    {
     }
 
     private function insertElement($token, $append = true, $check = false) {

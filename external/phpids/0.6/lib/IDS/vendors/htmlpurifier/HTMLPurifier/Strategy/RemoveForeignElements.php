@@ -112,9 +112,7 @@ class HTMLPurifier_Strategy_RemoveForeignElements extends HTMLPurifier_Strategy
                     if (isset($hidden_elements[$token->name])) {
                         if ($token instanceof HTMLPurifier_Token_Start) {
                             $remove_until = $token->name;
-                        } elseif ($token instanceof HTMLPurifier_Token_Empty) {
-                            // do nothing: we're still looking
-                        } else {
+                        } elseif (!$token instanceof HTMLPurifier_Token_Empty) {
                             $remove_until = false;
                         }
                         if ($e) $e->send(E_ERROR, 'Strategy_RemoveForeignElements: Foreign meta element removed');
@@ -150,8 +148,7 @@ class HTMLPurifier_Strategy_RemoveForeignElements extends HTMLPurifier_Strategy
                     if ($e) $e->send(E_NOTICE, 'Strategy_RemoveForeignElements: Comment removed');
                     continue;
                 }
-            } elseif ($token instanceof HTMLPurifier_Token_Text) {
-            } else {
+            } elseif (!$token instanceof HTMLPurifier_Token_Text) {
                 continue;
             }
             $result[] = $token;
