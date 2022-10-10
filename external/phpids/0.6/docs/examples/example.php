@@ -34,8 +34,8 @@ try {
     /*
     * It's pretty easy to get the PHPIDS running
     * 1. Define what to scan
-    * 
-    * Please keep in mind what array_merge does and how this might interfer 
+    *
+    * Please keep in mind what array_merge does and how this might interfer
     * with your variables_order settings
     */
     $request = array(
@@ -59,7 +59,7 @@ try {
      *
      * or you can access the config directly like here:
      */
-    
+
     $init->config['General']['base_path'] = dirname(__FILE__) . '/../../lib/IDS/';
     $init->config['General']['use_base_path'] = true;
     $init->config['Caching']['caching'] = 'none';
@@ -107,8 +107,6 @@ try {
         );
         */
         $compositeLog->execute($result);
-        
-
     } else {
         echo '<a href="?test=%22><script>eval(window.name)</script>">No attack detected - click for an example attack</a>';
     }

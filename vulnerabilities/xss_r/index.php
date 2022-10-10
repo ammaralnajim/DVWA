@@ -1,9 +1,9 @@
 <?php
 
-define( 'DVWA_WEB_PAGE_TO_ROOT', '../../' );
+define('DVWA_WEB_PAGE_TO_ROOT', '../../');
 require_once DVWA_WEB_PAGE_TO_ROOT . 'dvwa/includes/dvwaPage.inc.php';
 
-dvwaPageStartup( array( 'authenticated', 'phpids' ) );
+dvwaPageStartup(array( 'authenticated', 'phpids' ));
 
 $page = dvwaPageNewGrab();
 $page[ 'title' ]   = 'Vulnerability: Reflected Cross Site Scripting (XSS)' . $page[ 'title_separator' ].$page[ 'title' ];
@@ -14,19 +14,19 @@ $page[ 'source_button' ] = 'xss_r';
 dvwaDatabaseConnect();
 
 $vulnerabilityFile = '';
-switch( $_COOKIE[ 'security' ] ) {
-	case 'low':
-		$vulnerabilityFile = 'low.php';
-		break;
-	case 'medium':
-		$vulnerabilityFile = 'medium.php';
-		break;
-	case 'high':
-		$vulnerabilityFile = 'high.php';
-		break;
-	default:
-		$vulnerabilityFile = 'impossible.php';
-		break;
+switch ($_COOKIE[ 'security' ]) {
+    case 'low':
+        $vulnerabilityFile = 'low.php';
+        break;
+    case 'medium':
+        $vulnerabilityFile = 'medium.php';
+        break;
+    case 'high':
+        $vulnerabilityFile = 'high.php';
+        break;
+    default:
+        $vulnerabilityFile = 'impossible.php';
+        break;
 }
 
 require_once DVWA_WEB_PAGE_TO_ROOT . "vulnerabilities/xss_r/source/{$vulnerabilityFile}";
@@ -43,8 +43,9 @@ $page[ 'body' ] .= "
 				<input type=\"submit\" value=\"Submit\">
 			</p>\n";
 
-if( $vulnerabilityFile == 'impossible.php' )
-	$page[ 'body' ] .= "			" . tokenField();
+if ($vulnerabilityFile == 'impossible.php') {
+    $page[ 'body' ] .= "			" . tokenField();
+}
 
 $page[ 'body' ] .= "
 		</form>
@@ -53,14 +54,12 @@ $page[ 'body' ] .= "
 
 	<h2>More Information</h2>
 	<ul>
-		<li>" . dvwaExternalLinkUrlGet( 'https://owasp.org/www-community/attacks/xss/' ) . "</li>
-		<li>" . dvwaExternalLinkUrlGet( 'https://owasp.org/www-community/xss-filter-evasion-cheatsheet' ) . "</li>
-		<li>" . dvwaExternalLinkUrlGet( 'https://en.wikipedia.org/wiki/Cross-site_scripting' ) . "</li>
-		<li>" . dvwaExternalLinkUrlGet( 'http://www.cgisecurity.com/xss-faq.html' ) . "</li>
-		<li>" . dvwaExternalLinkUrlGet( 'http://www.scriptalert1.com/' ) . "</li>
+		<li>" . dvwaExternalLinkUrlGet('https://owasp.org/www-community/attacks/xss/') . "</li>
+		<li>" . dvwaExternalLinkUrlGet('https://owasp.org/www-community/xss-filter-evasion-cheatsheet') . "</li>
+		<li>" . dvwaExternalLinkUrlGet('https://en.wikipedia.org/wiki/Cross-site_scripting') . "</li>
+		<li>" . dvwaExternalLinkUrlGet('http://www.cgisecurity.com/xss-faq.html') . "</li>
+		<li>" . dvwaExternalLinkUrlGet('http://www.scriptalert1.com/') . "</li>
 	</ul>
 </div>\n";
 
-dvwaHtmlEcho( $page );
-
-?>
+dvwaHtmlEcho($page);
