@@ -235,13 +235,13 @@ class IdsComponent extends Object
         $compositeLog = new IDS_Log_Composite();
         $compositeLog->addLogger(
             IDS_Log_Email::getInstance(
-               $this->init->config['IDS_Logging']['recipient'],
-               $this->config['IDS_Logging']['subject'],
-               null, //optional headers
+                $this->init->config['IDS_Logging']['recipient'],
+                $this->config['IDS_Logging']['subject'],
+                null, //optional headers
                                       $this->init->config['IDS_Logging']['safemode'],
-               $this->init->config['IDS_Logging']['allowed_rate'],
-               $this->init->config['IDS_Basic']['tmp_path']
-           )
+                $this->init->config['IDS_Logging']['allowed_rate'],
+                $this->init->config['IDS_Basic']['tmp_path']
+            )
         );
 
         if (!$result->isEmpty()) {
