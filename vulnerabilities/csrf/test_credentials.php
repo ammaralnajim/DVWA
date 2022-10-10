@@ -1,32 +1,30 @@
 <?php
 
-define( 'DVWA_WEB_PAGE_TO_ROOT', '../../' );
+define('DVWA_WEB_PAGE_TO_ROOT', '../../');
 require_once DVWA_WEB_PAGE_TO_ROOT . 'dvwa/includes/dvwaPage.inc.php';
 
-dvwaPageStartup( array( 'authenticated', 'phpids' ) );
+dvwaPageStartup(array( 'authenticated', 'phpids' ));
 dvwaDatabaseConnect();
 $login_state = "";
 
-if( isset( $_POST[ 'Login' ] ) ) {
+if (isset($_POST[ 'Login' ])) {
+    $user = $_POST[ 'username' ];
+    $user = stripslashes($user);
+    $user = mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $user);
 
-	$user = $_POST[ 'username' ];
-	$user = stripslashes( $user );
-	$user = mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $user);
+    $pass = $_POST[ 'password' ];
+    $pass = stripslashes($pass);
+    $pass = mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $pass);
+    $pass = md5($pass);
 
-	$pass = $_POST[ 'password' ];
-	$pass = stripslashes( $pass );
-	$pass = mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $pass);
-	$pass = md5( $pass );
-
-	$query  = "SELECT * FROM `users` WHERE user='$user' AND password='$pass';";
-	$result = @mysqli_query($GLOBALS["___mysqli_ston"], $query) or die( '<pre>'.  mysqli_connect_error() . '.<br />Try <a href="setup.php">installing again</a>.</pre>' );
-	if( $result && mysqli_num_rows( $result ) == 1 ) {    // Login Successful...
-		$login_state = "<h3 class=\"loginSuccess\">Valid password for '{$user}'</h3>";
-	}else{
-		// Login failed
-		$login_state = "<h3 class=\"loginFail\">Wrong password for '{$user}'</h3>";
-	}
-
+    $query  = "SELECT * FROM `users` WHERE user='$user' AND password='$pass';";
+    $result = @mysqli_query($GLOBALS["___mysqli_ston"], $query) or die('<pre>'.  mysqli_connect_error() . '.<br />Try <a href="setup.php">installing again</a>.</pre>');
+    if ($result && mysqli_num_rows($result) == 1) {    // Login Successful...
+        $login_state = "<h3 class=\"loginSuccess\">Valid password for '{$user}'</h3>";
+    } else {
+        // Login failed
+        $login_state = "<h3 class=\"loginFail\">Wrong password for '{$user}'</h3>";
+    }
 }
 $messagesHtml = messagesPopAllToHtml();
 $page = dvwaPageNewGrab();
@@ -49,6 +47,4 @@ $page[ 'body' ] .= "
 			</div>
 		</div>\n";
 
-dvwaSourceHtmlEcho( $page );
-
-?>
+dvwaSourceHtmlEcho($page);
