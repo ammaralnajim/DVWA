@@ -1,4 +1,5 @@
 <?php
+
 $page[ 'body' ] .= <<<EOF
 <script>
 
@@ -21,4 +22,3 @@ https://github.com/blueimp/JavaScript-MD5
 	generate_token();
 </script>
 EOF;
-?>

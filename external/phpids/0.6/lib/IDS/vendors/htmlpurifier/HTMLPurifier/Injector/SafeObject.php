@@ -8,10 +8,10 @@ class HTMLPurifier_Injector_SafeObject extends HTMLPurifier_Injector
 {
     public $name = 'SafeObject';
     public $needed = array('object', 'param');
-    
+
     protected $objectStack = array();
     protected $paramStack  = array();
-    
+
     // Keep this synchronized with AttrTransform/SafeParam.php
     protected $addParam = array(
         'allowScriptAccess' => 'never',
@@ -21,12 +21,14 @@ class HTMLPurifier_Injector_SafeObject extends HTMLPurifier_Injector
         'wmode' => true,
         'movie' => true,
     );
-    
-    public function prepare($config, $context) {
+
+    public function prepare($config, $context)
+    {
         parent::prepare($config, $context);
     }
-    
-    public function handleElement(&$token) {
+
+    public function handleElement(&$token)
+    {
         if ($token->name == 'object') {
             $this->objectStack[] = $token;
             $this->paramStack[] = array();
@@ -59,10 +61,7 @@ class HTMLPurifier_Injector_SafeObject extends HTMLPurifier_Injector
                 ) {
                     // keep token, and add to param stack
                     $this->paramStack[$i][$n] = true;
-                } elseif (isset($this->allowedParam[$n])) {
-                    // keep token, don't do anything to it
-                    // (could possibly check for duplicates here)
-                } else {
+                } elseif (!isset($this->allowedParam[$n])) {
                     $token = false;
                 }
             } else {
@@ -71,8 +70,9 @@ class HTMLPurifier_Injector_SafeObject extends HTMLPurifier_Injector
             }
         }
     }
-    
-    public function handleEnd(&$token) {
+
+    public function handleEnd(&$token)
+    {
         // This is the WRONG way of handling the object and param stacks;
         // we should be inserting them directly on the relevant object tokens
         // so that the global stack handling handles it.
@@ -81,6 +81,4 @@ class HTMLPurifier_Injector_SafeObject extends HTMLPurifier_Injector
             array_pop($this->paramStack);
         }
     }
-    
 }
-

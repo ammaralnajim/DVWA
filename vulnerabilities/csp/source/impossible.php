@@ -6,8 +6,8 @@ header($headerCSP);
 
 ?>
 <?php
-if (isset ($_POST['include'])) {
-$page[ 'body' ] .= "
+if (isset($_POST['include'])) {
+    $page[ 'body' ] .= "
 	" . $_POST['include'] . "
 ";
 }
@@ -20,4 +20,3 @@ $page[ 'body' ] .= '
 
 <script src="source/impossible.js"></script>
 ';
-
